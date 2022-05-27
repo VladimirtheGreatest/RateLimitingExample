@@ -18,6 +18,8 @@ namespace RateLimitingExample
             _cache = cache;
         }
 
+        //https://docs.microsoft.com/en-us/aspnet/core/performance/caching/distributed?view=aspnetcore-6.0
+
         public async Task InvokeAsync(HttpContext context)
         {
             var endpoint = context.GetEndpoint();

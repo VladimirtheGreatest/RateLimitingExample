@@ -25,7 +25,7 @@ namespace RateLimitingExample.Controllers
         }
 
         [HttpGet("")]
-        [LimitRequests(MaxRequests = 5, TimeWindow = 60)]
+        [LimitRequests(MaxRequests = 5, TimeWindow = 60)] 
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();
