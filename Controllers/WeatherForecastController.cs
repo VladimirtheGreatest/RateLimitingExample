@@ -14,7 +14,6 @@ namespace RateLimitingExample.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private readonly IRedis _redisCache;
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -22,35 +21,15 @@ namespace RateLimitingExample.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, IRedis redisCache)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger)
         {
             _logger = logger;
-            _redisCache = redisCache;
         }
 
         [HttpGet("")]
-        [LimitRequests(MaxRequests = 5, TimeWindow = 60)] 
+        [LimitRequests(MaxRequests = 5, TimeWindow = 60)] //eventually remove this decorator and put implementation to the middleware itself
         public IEnumerable<WeatherForecast> Get()
         {
-            var connection = _redisCache.Connection;
-
-            IDatabase cache = connection.GetDatabase();
-
-
-            ClientStatistics clientStatistic = new ClientStatistics
-            {
-                LastSuccessfulResponseTime = DateTime.Now,
-                NumberOfRequestsCompletedSuccessfully = 1,
-
-            };
-
-            var messageSet = cache.StringSet("ServiceProviderKeyExample", JsonConvert.SerializeObject(clientStatistic)).ToString();
-
-
-            ClientStatistics itemFromCache = JsonConvert.DeserializeObject<ClientStatistics>(cache.StringGet("ServiceProviderKeyExample"));
-
-
-
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {

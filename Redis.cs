@@ -23,7 +23,7 @@ namespace RateLimitingExample
         {
             get
             { 
-              return _lazyConnection.Value;
+              return _lazyConnection?.Value;
             }
         }
     }
